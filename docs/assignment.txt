@@ -1,0 +1,171 @@
+Process and Instrumentation Design Project 
+2026 
+Contributes 20% to the final mark for the unit 
+To be submitted to the LMS by 11:59 pm Wednesday 
+13th May 2026 
+“Scientists study the world as it is; engineers create the world that has never been, " Theodore 
+van Kérmén — Aerospace engineer and physicist. 
+“As engineers, we were going to be in a position to change the world — not just study it,” 
+Henry Petroski — Engineer. 
+“Engineering is the application of science for human benefit.” — J. M. Prausnitz — Chemical 
+Engineer. 
+“We are continually faced by great opportunities brilliantly disquised as insoluble problems,” 
+Lee Tacocca — Engineer and Automobile Executive. 
+Why learn to work in groups? 
+The following is an extract from the report titled “ENGINEERING FUTURES 2035: A scoping 
+study™! 
+The AICD view is that specialists will be working increasingly in cross-functional 
+teams and higher order soft skills such as empathy, professional ethics and emo- 
+tional judgment are likely to be increasingly valued. This view is reinforced in the 
+2018 report from The Association of Independent Schools in NSW which analy- 
+ses interviews held with 15 CEOs, managing directors and leaders to explore the 
+CEO’s views on how technology-driven disruption and associated economic and so- 
+cietal changes were affecting their organisations now, anticipated future impacts, 
+and what this might mean for education. Many of the global trends identified by 
+other reports were also cited by the CEOs from a range of organisations in Australia 
+who were interviewed for this report, some of whom say: 
+‘Pure technical ability will no longer be sufficient; creative and interpersonal skills 
+will be required even in domains which were once predominantly technical’ 
+Domain expertise will still be valued, although demands for specific skills are likely 
+to fluctuate and changing skills requirements will lead to greater diversity in the 
+workplace. The rapid pace of change means that some skills will go out of date 
+quickly. Continuing lifelong learning will be essential. Adaptability, flexibility and 
+Peter L Lee, Chair, Steering Committee, ENGINEERING FUTURES 2035: A scoping study, Australian 
+Academy of Engineering Deans, 2019.
+
+resilience will be increasingly important. Those working in start-ups and small 
+companies in particular will be: 
+‘asked to do things they have no experience in and that things can — and will - 
+change dramatically from day to day’ 
+Assessed outcomes 
+Ability to find and discriminate information from data bases, such as libraries, technical 
+and academic articles and the internet, relevant to the questions 
+Ability to write concisely, clearly and logically 
+Ability to interpret and put information together in a logical way, and to understand the 
+implications. 
+Ability to work in a team to achieve a common goal 
+Ability to work to international standards 
+Ability to write readable and maintainable programs for PLCs 
+Background 
+A manufacturer produces two types of products: A red container containing Fluid A, a 
+viscous fluid, and blue container, also a viscous fluid, containing Fluid B. 
+The structure of the factory is that each step of the process is performed by a work-cell. 
+Robot arms move the output of one cell to the next cell in the sequence under a command 
+from the next cell. 
+The batch process consists of a cell that produces empty red containers, a cell that 
+produces empty blue containers, a cell that fills the containers depending on the colour 
+of the container with the appropriate fluid and a cell that seals the containers with a 
+common lid. 
+The filling cell is supplied with containers by a robot which places a container on the 
+conveyor belt of the filling station. 
+A separate robot collects the filled containers at the end of the filling station’s conveyor 
+belt. 
+The manufacturer uses the PackML standard in the factory. 
+You have been contracted to write the program to control the filling work cell. The 
+program must comply with the full PackML standard. 
+The customer has fitted an acoustic level sensor (High when Full), proximity sensor for 
+the container at the input. (High when a container is present), and separate solenoids 
+that operate the filling of fluid A and fluid B (High opens the filling injector).
+
+« The cell has a conveyor belt to move the container to the appropriate filling location and 
+to shift it to the region where the robot arm picks up the container for the next cell. (The 
+conveyor belt is turned on with a High signal.) 
+« Not all of the necessary items have been included and you are free to add sensors and 
+drivers as you see fit. 
+« You should also consider fault situations and what should be done about them. That is 
+what triggers an Abort or Stop etc 
+Deliverables 
+The following deliverables are required: 
+1. State diagram of the PackML (ANSI/ISA TR88.02-2015) structure: 
+2. A Structured Text program written on the CODESYS platform for each state of the 
+PackML structure. The execute state is where your program for the filling of the con- 
+tainers resides; 
+3. A Sequential Function Chart written on the CODESYS platform representing the PackML 
+structure using the structured text programs of each state in each step; 
+4. A Visualization written on the CODESYS platform to demonstrate that the program 
+functions correctly. The Visualization should have lamps to indicate the current state of 
+the operation. It should also have indicators for the filler, conveyor, proximity switch, 
+injector and container level; 
+5. A table of the input devices giving the address (variable name), acronym and description 
+of each input device;
+
+6. A table of the output devices giving the address (variable name), acronym and description 
+of each output device; 
+7. Description of the operation of each state (Stop, Execute, etc) with respect to PackML 
+standard and how it operates in the context of the filling of the containers; 
+8. The weekly group diary of the meetings indicating who attended, meeting date, start 
+time and finish time, a discussion of the quality of the contribution of the tasks allocated 
+at the last meeting, tasks allocated to each member to be completed by the next meeting. 
+It is recommended that a different person complete the diary each week. The completed 
+diary over all the weeks will be used to resolve any conflicts that arise and consequently 
+every member of the group must receive a copy of the current week’s diary entry and this 
+should be ratified at the next meeting; 
+9. The completion of each of the Feedback Fruit surveys by the specified dates. These 
+surveys will be used to determine individual’s contribution to the assignment and will be 
+used to calculate the individual’s mark for the assignment once the group’s assignment 
+mark has been determined; 
+10. The assignment, including an image of the CODESYS program must be uploaded to the 
+LMS; 
+11. A USB drive (which can be collected after the assignment has been marked) that contains 
+the program in a form where it can be used to run the program using CODESYS. 
+Notes: 
+1. Installation 
+« You may use as few or as many instruments as you like, as well as others if the types 
+of instruments listed are not adequate for your chosen control philosophy; 
+« For any instrumentation that requires specific dimensional information (i.e. pipe 
+diameter for a flow meter etc) state your chosen dimensions, using information where 
+available or make an assumption and describe why you chose that value; 
+« Assume mounting points are available for all instruments at the points you want to 
+put them in the process; 
+o Assume 240VAC and 24VDC power supplies are available wherever needed; 
+« It is not necessary to establish a communications protocol or use pack.tags 
+2. Groups 
+« You have been allocated to a group to work on this assignment. You cannot change 
+the membership of the group. 
+o Attendance at group meetings is compulsory. A penalty of 10% will apply to any 
+individual who misses more than one meeting without sufficient cause verified by 
+the School Student Office in the form of Special Consideration 
+« The purpose of the group is to assist the individual in finding relevant, quality sources 
+of information and through discussion among the group come to an understanding 
+and agreement on how to complete the assignment.
+
+« The group is responsible for including all members of the group in the meetings. 
+This means that all members must be contacted and a communication method 
+established. A time and place must be determined so that all members can attend 
+meetings. 
++ Warning: If a member allocated to a group is not included in communications, 
+then unless there is a satisfactory reason (this needs to be confirmed by the unit- 
+coordinator), all members of the group will be penalised 10%. 
+« You are expected to meet weekly and keep a group diary from the time that the 
+assignment has been allocated. 
+« The expected average weekly effort on this assignment is 5 hours each person. This 
+includes the time for meetings and discussion, literature search and information 
+assimilation. 
+« You can meet using any form of communication you prefer: F2F, Wechat, Line, 
+Teams, Zoom etc. 
+3. References 
+« All sources must be declared using the IEEE format for referencing and must be in 
+the english language. Referring to information from the internet requires the url and 
+access date. Referring to the lecture notes is not appropriate for this assessment. 
+4. The report 
+« The quality of the writing is expected to be at a high standard, showing both a 
+command of english (spelling, punctuation and vocabulary) and an understanding 
+of the technical language appropriate to the field. 
+« All material appearing in the report that is not the group’s original work must be 
+appropriately referenced and a consistent citation style must be used throughout 
+the document. 
+o The report will be judged on the following criteria: 
+— Clarity & conciseness of the explanations and diagrams; 
+— Use & relevance of theories & frameworks; 
+— Insight & synthesis of the information collected; 
+— Use of sound logical argument 
+« The program will be judged on the following items 
+— Ability to easily understand the function of the program 
+— The ease of changing the program in the event of customer changes 
+— Readability of the program 
+— The overall operation of the program 
+5. Feedback-fruits The performance feedback software Feedback-fruits will be used to moni- 
+tor issues within a group and to make adjustments of the Group Marks to the Individual 
+Marks. There will be 3 surveys through out the semester. The last survey due at the time 
+of submission of the assignment is the main tool used to make adjustments. However, 
+any adjustments require that there is a consistent message coming from all 3 surveys.

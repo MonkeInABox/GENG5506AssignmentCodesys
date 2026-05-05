@@ -1,0 +1,354 @@
+Execute State Fault Code Explanation
+1. Purpose
+This document explains when each FaultCode appears during the Execute state of the filling system. The codes are
+grouped by PackML response type: Hold, Suspend, and Abort. The goal is to make the fault handling easier to test and
+easier to describe in the report.
+2. State Classification
+PackML response
+Meaning
+System behavior
+Hold
+Internal temporary condition
+The machine pauses because an internal
+condition is not ready. After the issue is
+corrected, UnholdCmd returns the system
+to Execute.
+Suspend
+External temporary condition
+The machine pauses because the
+upstream or downstream flow is
+temporarily unavailable. After the
+condition clears, UnsuspendCmd returns
+the system to Execute.
+Abort
+Serious fault condition
+The machine stops safely because the
+problem is more serious. The system
+must go through Aborting, Aborted,
+Clearing, and then restart from Stopped.
+3. Fault Code Overview
+FaultCode
+Response
+Trigger condition
+Meaning
+Expected reaction
+30
+Suspend
+Infeed_Block_Sensor is
+TRUE
+The infeed area is
+blocked or the
+upstream supply is
+temporarily unavailable.
+SuspendCmd becomes
+TRUE. The SFC moves
+to Suspending and then
+Suspended.
+40
+Suspend
+Outfeed_Block_Sensor
+is TRUE
+The outfeed area is
+blocked or the
+downstream side is
+temporarily unavailable.
+SuspendCmd becomes
+TRUE. The SFC moves
+to Suspending and then
+Suspended.
+50
+Hold
+Low_Fluid_A is TRUE
+and ContainerType
+equals 1
+A red container needs
+Fluid A, but Fluid A is
+low.
+HoldCmd becomes
+TRUE. The SFC moves
+to Holding and then
+Held.
+60
+Hold
+Low_Fluid_B is TRUE
+and ContainerType
+equals 2
+A blue container needs
+Fluid B, but Fluid B is
+low.
+HoldCmd becomes
+TRUE. The SFC moves
+to Holding and then
+Held.
+10
+Abort
+Valve_A and Valve_B
+are both TRUE
+Both filling valves are
+commanded on at the
+same time. This can
+cause mixing of Fluid A
+and Fluid B.
+AbortCmd becomes
+TRUE. Outputs are
+switched off.
+Alarm_Lamp and
+Stack_Light_Red turn
+on.
+20
+Abort
+Conveyor_Fault is
+TRUE
+The conveyor has
+reported a fault.
+AbortCmd becomes
+TRUE and the system
+moves to Aborting.
+70
+Abort
+ExecStep equals 20
+and Fill_Pos_Sensor is
+not received before
+T_MoveToFill expires
+The container did not
+reach the filling position
+in time.
+AbortCmd becomes
+TRUE and the machine
+stops safely.
+80
+Abort
+ExecStep equals 40 or
+50 and
+Level_Full_Sensor is
+not received before
+The filling operation did
+not complete in time.
+AbortCmd becomes
+TRUE and the machine
+stops safely.
+
+T_Fill expires
+90
+Abort
+ExecStep equals 70
+and Exit_Sensor is not
+received before
+T_MoveToExit expires
+The filled container did
+not reach the exit
+position in time.
+AbortCmd becomes
+TRUE and the machine
+stops safely.
+100
+Abort
+ExecStep equals 90
+and Robot_Pick_Done
+is not received before
+T_Pickup expires
+The robot did not
+confirm pickup in time.
+AbortCmd becomes
+TRUE and the machine
+stops safely.
+110
+Abort
+Red_Container_Sensor
+and
+Blue_Container_Sensor
+are both TRUE
+The color detection
+result is conflicting.
+AbortCmd becomes
+TRUE because the
+system cannot safely
+choose the filling
+branch.
+120
+Abort
+ExecStep equals 30
+and ContainerType is
+neither 1 nor 2
+The program is ready to
+choose a filling branch,
+but the stored container
+type is invalid.
+AbortCmd becomes
+TRUE because the
+system does not know
+whether to use Valve_A
+or Valve_B.
+999
+Abort
+ExecStep has an
+undefined value
+The internal Execute
+step value is outside
+the defined sequence.
+AbortCmd becomes
+TRUE and the system
+moves to Aborting.
+4. Detailed Explanation by Response Type
+4.1 Hold faults
+FaultCode 50 and FaultCode 60 are Hold conditions. They are caused by low fluid level during the filling process. The
+machine should pause, keep the process step, and wait for the operator to refill the tank. After the low fluid input is
+cleared, UnholdCmd can be used to return to Execute.
+FaultCode
+When it appears
+Why it uses Hold
+How to recover
+50
+A red container has been
+selected and Low_Fluid_A
+becomes TRUE.
+The machine can continue
+after Fluid A is refilled.
+Set Low_Fluid_A to FALSE,
+then set UnholdCmd to TRUE.
+60
+A blue container has been
+selected and Low_Fluid_B
+becomes TRUE.
+The machine can continue
+after Fluid B is refilled.
+Set Low_Fluid_B to FALSE,
+then set UnholdCmd to TRUE.
+4.2 Suspend faults
+FaultCode 30 and FaultCode 40 are Suspend conditions. They represent temporary upstream or downstream flow
+interruptions. The machine stops safely and waits until the external condition is corrected. Then UnsuspendCmd can
+return the system to Execute.
+FaultCode
+When it appears
+Why it uses Suspend
+How to recover
+30
+Infeed_Block_Sensor
+becomes TRUE.
+The infeed flow is temporarily
+blocked or unavailable.
+Clear Infeed_Block_Sensor,
+then set UnsuspendCmd to
+TRUE.
+40
+Outfeed_Block_Sensor
+becomes TRUE.
+The outfeed flow is
+temporarily blocked or
+unavailable.
+Clear Outfeed_Block_Sensor,
+then set UnsuspendCmd to
+TRUE.
+4.3 Abort faults
+Abort faults are serious problems. When one of these faults appears, the machine should stop safely, raise the alarm,
+and go to Aborting and then Aborted. The operator should clear the issue before using ClearCmd.
+5. Simple Testing Guide
+Test target
+Set these values
+Expected result
+Recovery action
+FaultCode 50
+ContainerType equals 1, then
+FaultCode equals 50,
+Set Low_Fluid_A to FALSE,
+
+set Low_Fluid_A to TRUE.
+HoldCmd equals TRUE, SFC
+goes to Holding and Held.
+then set UnholdCmd to TRUE.
+FaultCode 60
+ContainerType equals 2, then
+set Low_Fluid_B to TRUE.
+FaultCode equals 60,
+HoldCmd equals TRUE, SFC
+goes to Holding and Held.
+Set Low_Fluid_B to FALSE,
+then set UnholdCmd to TRUE.
+FaultCode 30
+Set Infeed_Block_Sensor to
+TRUE while Execute is active.
+FaultCode equals 30,
+SuspendCmd equals TRUE,
+SFC goes to Suspending and
+Suspended.
+Set Infeed_Block_Sensor to
+FALSE, then set
+UnsuspendCmd to TRUE.
+FaultCode 40
+Set Outfeed_Block_Sensor to
+TRUE while Execute is active.
+FaultCode equals 40,
+SuspendCmd equals TRUE,
+SFC goes to Suspending and
+Suspended.
+Set Outfeed_Block_Sensor to
+FALSE, then set
+UnsuspendCmd to TRUE.
+FaultCode 70
+Reach ExecStep 20 and keep
+Fill_Pos_Sensor FALSE until
+the timer expires.
+FaultCode equals 70,
+AbortCmd equals TRUE, SFC
+goes to Aborting and Aborted.
+Clear the fault condition, then
+use ClearCmd.
+FaultCode 80
+Reach ExecStep 40 or 50 and
+keep Level_Full_Sensor
+FALSE until the timer expires.
+FaultCode equals 80,
+AbortCmd equals TRUE, SFC
+goes to Aborting and Aborted.
+Clear the fault condition, then
+use ClearCmd.
+FaultCode 90
+Reach ExecStep 70 and keep
+Exit_Sensor FALSE until the
+timer expires.
+FaultCode equals 90,
+AbortCmd equals TRUE, SFC
+goes to Aborting and Aborted.
+Clear the fault condition, then
+use ClearCmd.
+FaultCode 100
+Reach ExecStep 90 and keep
+Robot_Pick_Done FALSE
+until the timer expires.
+FaultCode equals 100,
+AbortCmd equals TRUE, SFC
+goes to Aborting and Aborted.
+Clear the fault condition, then
+use ClearCmd.
+FaultCode 110
+Set Red_Container_Sensor
+and Blue_Container_Sensor
+to TRUE at the same time.
+FaultCode equals 110,
+AbortCmd equals TRUE.
+Clear both color inputs as
+needed, then use ClearCmd.
+FaultCode 120
+Force ExecStep to 30 and set
+ContainerType to 0 or 3.
+FaultCode equals 120,
+AbortCmd equals TRUE.
+Clear the fault condition, then
+use ClearCmd.
+FaultCode 999
+Force ExecStep to a value
+that is not defined, such as
+999.
+FaultCode equals 999,
+AbortCmd equals TRUE.
+Clear the fault condition, then
+use ClearCmd.
+6. Notes for the Report
+• FaultCode 50 and 60 are used for internal pause conditions, so they are classified as Hold.
+• FaultCode 30 and 40 are used for temporary infeed or outfeed flow problems, so they are classified as Suspend.
+• Timeouts, conflicting sensor results, invalid container type, conveyor fault, and unknown ExecStep are classified as
+Abort.
+• During Hold or Suspend, Execute timers should be disabled so that a temporary pause does not become a timeout
+fault.
+• The optional signals Valve_A_FB, Valve_B_FB, and Zero_Speed_SW can be reserved for future feedback
+monitoring. They are not required in the current simplified Execute fault logic.
